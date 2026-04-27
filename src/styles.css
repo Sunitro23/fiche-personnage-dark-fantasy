@@ -479,6 +479,19 @@ h2 {
   letter-spacing: 0.1em;
 }
 
+.creation-info {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(182, 155, 107, 0.22);
+  background: rgba(5, 5, 5, 0.24);
+}
+
+.creation-info .field:last-child input {
+  text-align: center;
+}
+
 .inventory-list {
   display: grid;
   gap: 0.5rem;
@@ -710,6 +723,11 @@ h2 {
 
   .identity-fields {
     grid-template-columns: 1fr 8rem;
+  }
+
+  .creation-info {
+    grid-template-columns: 1fr 1fr 7rem;
+    align-items: end;
   }
 
   .weapon-row {

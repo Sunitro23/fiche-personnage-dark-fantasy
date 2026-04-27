@@ -90,6 +90,10 @@ function App() {
   const [characters, setCharacters] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [creationStats, setCreationStats] = useState(null);
+  const [creationInfo, setCreationInfo] = useState({
+    nom: EMPTY_CHARACTER.nom,
+    armure: EMPTY_CHARACTER.armure,
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const portraitInputRef = useRef(null);
@@ -156,6 +160,11 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(toSaveData({
           ...EMPTY_CHARACTER,
+          nom: creationInfo.nom || EMPTY_CHARACTER.nom,
+          armure: {
+            nom: creationInfo.armure.nom || EMPTY_CHARACTER.armure.nom,
+            reduction: Number(creationInfo.armure.reduction ?? EMPTY_CHARACTER.armure.reduction),
+          },
           stats,
           pvActuels: stats.CON,
           chanceActuelle: stats.CHANCE,
@@ -208,12 +217,20 @@ function App() {
     didLoadCharacter.current = false;
     setSelectedId('');
     setCreationStats(null);
+    setCreationInfo({
+      nom: EMPTY_CHARACTER.nom,
+      armure: EMPTY_CHARACTER.armure,
+    });
     setCharacter(EMPTY_CHARACTER);
     loadCharacters();
   }
 
   function startCreation() {
     setCreationStats(EMPTY_CHARACTER.stats);
+    setCreationInfo({
+      nom: EMPTY_CHARACTER.nom,
+      armure: EMPTY_CHARACTER.armure,
+    });
     setStatusMessage('');
   }
 
@@ -318,6 +335,36 @@ function App() {
           <div className="panel-title">
             <h2>Choisir les statistiques</h2>
             <p><span>{creationUsed} / {STAT_BUDGET}</span>Base {BASE_STAT} · maximum {MAX_STAT}</p>
+          </div>
+
+          <div className="creation-info">
+            <TextField
+              label="Nom"
+              value={creationInfo.nom}
+              onChange={(nom) => setCreationInfo((current) => ({ ...current, nom }))}
+            />
+            <label className="field">
+              <span>Armure</span>
+              <input
+                value={creationInfo.armure.nom}
+                onChange={(event) => setCreationInfo((current) => ({
+                  ...current,
+                  armure: { ...current.armure, nom: event.target.value },
+                }))}
+              />
+            </label>
+            <label className="field">
+              <span>Réduction</span>
+              <input
+                type="number"
+                min="0"
+                value={creationInfo.armure.reduction}
+                onChange={(event) => setCreationInfo((current) => ({
+                  ...current,
+                  armure: { ...current.armure, reduction: Number(event.target.value) },
+                }))}
+              />
+            </label>
           </div>
 
           <div className="stat-list">
